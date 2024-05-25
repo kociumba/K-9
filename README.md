@@ -25,7 +25,7 @@ watchers:
 
 You can add as many files to watch as you want, each one can execute the commands defined in cmds.
 
-The delay setting limits how often the commands can be executed within a specified interval (in seconds).
+The delay setting limits how often the commands can be executed within a specified interval in seconds (the delay is seperate for each watcher).
 
 Currently, K-9 can only watch files in the same directory as the k-9.yml configuration file.
 

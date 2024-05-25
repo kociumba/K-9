@@ -59,7 +59,7 @@ func (w *Watcher) init() error {
 	}
 
 	if filePath == "" {
-		log.Fatal("No file with specified type found in the working dir")
+		log.Fatal("Specified file not found")
 	}
 
 	watcher, err := fsnotify.NewWatcher()
@@ -92,7 +92,7 @@ func (w *Watcher) init() error {
 			if !ok {
 				return nil
 			}
-			log.Infof("error: %v\n", err)
+			log.Warn(err)
 		}
 	}
 }
