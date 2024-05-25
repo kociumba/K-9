@@ -1,0 +1,8 @@
+# K-9 config
+
+watchers:
+- file:
+    name: main.go
+    cmds:
+    - go test
+
