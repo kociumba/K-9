@@ -12,11 +12,11 @@ import (
 )
 
 type Watcher struct {
-	filetype *string
+	filename *string
 	cmds     *[]string
 }
 
-var executionCounter = 0
+// var executionCounter = 0
 
 func (w *Watcher) findFilePath() (string, error) {
 	files, err := os.ReadDir(".")
@@ -25,7 +25,7 @@ func (w *Watcher) findFilePath() (string, error) {
 	}
 
 	for _, file := range files {
-		if *w.filetype != "" && strings.Contains(file.Name(), *w.filetype) {
+		if *w.filename != "" && strings.Contains(file.Name(), *w.filename) {
 			return filepath.Join(".", file.Name()), nil
 		}
 	}
@@ -35,7 +35,7 @@ func (w *Watcher) findFilePath() (string, error) {
 
 func (w *Watcher) executeCommands() {
 	for _, cmd := range *w.cmds {
-		log.Infof("Executing command: %s for file type: %s\n", cmd, *w.filetype)
+		// log.Infof("Executing command: %s for file type: %s\n", cmd, *w.filetype)
 		// Here you can execute the command, e.g., using os/exec package
 		command := strings.Split(cmd, " ")
 
@@ -48,6 +48,10 @@ func (w *Watcher) executeCommands() {
 	}
 }
 
+// init initializes the Watcher by finding the file path, creating a new fsnotify watcher,
+// adding the file path to the watcher, and starting an infinite loop to monitor file events.
+//
+// Returns an error if there was an issue finding the file path, creating the watcher, or adding the file path to the watcher.
 func (w *Watcher) init() error {
 	filePath, err := w.findFilePath()
 	if err != nil {
@@ -78,9 +82,9 @@ func (w *Watcher) init() error {
 				return nil
 			}
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				if time.Since(lastEventTime) > 1*time.Second {
+				if time.Since(lastEventTime) > time.Duration(cfg.Delay)*time.Second {
 					lastEventTime = time.Now()
-					log.Infof("INFO modified file: %s\n", event.Name)
+					// log.Info("modified file: %s\n", event.Name)
 					w.executeCommands()
 				}
 			}
@@ -96,7 +100,7 @@ func (w *Watcher) init() error {
 func initializeWatchers() {
 	for _, watcher := range cfg.Watchers {
 		w := &Watcher{
-			filetype: &watcher.File.Name,
+			filename: &watcher.File.Name,
 			cmds:     &watcher.File.Cmds,
 		}
 		go func(w *Watcher) {

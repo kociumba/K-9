@@ -8,17 +8,18 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+// Config represents the overall configuration structure
+type Config struct {
+	Delay    int `yaml:"delay" env-default:"10"`
+	Watchers []struct {
+		File FileConfig `yaml:"file"`
+	} `yaml:"watchers"`
+}
+
 // FileConfig represents the configuration for each file entry
 type FileConfig struct {
 	Name string   `yaml:"name"`
 	Cmds []string `yaml:"cmds"`
-}
-
-// Config represents the overall configuration structure
-type Config struct {
-	Watchers []struct {
-		File FileConfig `yaml:"file"`
-	} `yaml:"watchers"`
 }
 
 var cfg Config
@@ -26,11 +27,13 @@ var input string
 
 var defaultConfig = `# K-9 config
 
+delay: 10
+
 watchers:
 - file:
     name: main.go
     cmds:
-    - go test
+    - cmd /c echo Hello from K-9!
 
 `
 
