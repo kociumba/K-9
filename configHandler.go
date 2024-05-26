@@ -45,14 +45,17 @@ watchers:
 func parseConfig() {
 	err := cleanenv.ReadConfig("k-9.yml", &cfg)
 	if err != nil {
-		log.Info("Seems like K-9 can't find or read a config file in this directory. Would you like to initialize one? [y/yes] or [n/no]")
-		fmt.Scanln(&input)
-		if input == "y" || input == "yes" {
-			initConfig()
-			log.Info("Edit the k-9.yml file and run the program again. Exiting...")
-			os.Exit(1)
-		} else {
-			log.Fatal("Exiting...")
+		err = cleanenv.ReadConfig("k-9.yaml", &cfg)
+		if err != nil {
+			log.Info("Seems like K-9 can't find or read a config file in this directory. Would you like to initialize one? [y/yes] or [n/no]")
+			fmt.Scanln(&input)
+			if input == "y" || input == "yes" {
+				initConfig()
+				log.Info("Edit the k-9.yml file and run the program again. Exiting...")
+				os.Exit(1)
+			} else {
+				log.Fatal("Exiting...")
+			}
 		}
 	}
 

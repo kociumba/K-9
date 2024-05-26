@@ -17,20 +17,44 @@ type Watcher struct {
 
 // var executionCounter = 0
 
-func (w *Watcher) findFilePath() (string, error) {
-	files, err := os.ReadDir(".")
+func (w *Watcher) findFilePath() ([]string, error) {
+	wd, err := os.Getwd()
 	if err != nil {
-		return "", err
+		return nil, err
+	}
+	files, err := os.ReadDir(wd)
+	if err != nil {
+		return nil, err
 	}
 
+	var matchingFiles []string
+
+	// This deep fried piece of shit loop holds this together 🥲
 	for _, file := range files {
-		if *w.filename != "" && strings.Contains(file.Name(), *w.filename) {
-			// log.Info("📂 watcher target: " + file.Name() + "found")
-			return filepath.Join(".", file.Name()), nil
+		if *w.filename != "" {
+			// parts := strings.Split(*w.filename, ".")
+
+			if strings.Contains(*w.filename, ".") {
+				// Support for single file watcher
+				if strings.Contains(file.Name(), *w.filename) {
+					// returns first file matching the name
+					return []string{filepath.Join(".", file.Name())}, nil
+				}
+			} else {
+				// Support for multiple file watcher
+				if strings.Contains(file.Name(), *w.filename) {
+					matchingFiles = append(matchingFiles, file.Name())
+				}
+			}
 		}
 	}
 
-	return "", nil
+	if len(matchingFiles) > 0 {
+		log.Warn(matchingFiles)
+		return matchingFiles, nil
+	}
+
+	return nil, nil
 }
 
 func (w *Watcher) executeCommands() {
@@ -58,8 +82,8 @@ func (w *Watcher) init() error {
 		return err
 	}
 
-	if filePath == "" {
-		log.Fatal("Specified file not found")
+	if filePath == nil {
+		log.Fatal("Specified file/s not found")
 	}
 
 	targetingStatus <- true
@@ -72,9 +96,11 @@ func (w *Watcher) init() error {
 	}
 	defer watcher.Close()
 
-	err = watcher.Add(filePath)
-	if err != nil {
-		return err
+	for i := 0; i < len(filePath); i++ {
+		err = watcher.Add(filePath[i])
+		if err != nil {
+			return err
+		}
 	}
 
 	watcherStatus <- true

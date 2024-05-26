@@ -7,7 +7,7 @@ Watches files for changes and executes user defined commands on detection.
 
 > If you run K-9 in a directory without a config file it will let you create one automatically.
 
-Since K-9 is inspired by Taskfile the config is a yml file with a very similar structure as Taskfile.yml.
+Since K-9 is inspired by Taskfile the config is a yaml file with a similar structure. The k-9.[yml/yaml] file looks like this:
 
 ```yaml
 # K-9 config
@@ -21,7 +21,7 @@ watchers:
     - cmd /c echo Hello from K-9! # has to be an exeutable
 ```
 
-> **NOTE** the commands need to be either an exeutable or passed into a shell of your choosing like `cmd /c` or `pwsh -command`.
+> **NOTE** the commands need to be either an exeutable or passed into a shell of your choosing like `cmd /c`, `pwsh -command`, `bash -c` or `sh -c`.
 
 You can add as many files to watch as you want, each one can execute the commands defined in cmds.
 
