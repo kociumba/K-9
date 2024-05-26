@@ -16,9 +16,17 @@ delay: 10 # seconds
 
 watchers:
 - file:
-    name: main.go # name of the file to watch
+    name: main.go # will watch only main.go
     cmds:
-    - cmd /c echo Hello from K-9! # has to be an exeutable
+    - cmd /c echo Change in main.go! # has to be an exeutable in system path
+- file:
+    name: main # will watch all files named main
+    cmds:
+    - task build
+- file:
+    name: .go # will watch all files with the extension .go
+    cmds:
+    - go test
 ```
 
 > **NOTE** the commands need to be either an exeutable or passed into a shell of your choosing like `cmd /c`, `pwsh -command`, `bash -c` or `sh -c`.

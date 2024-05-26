@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -16,6 +17,7 @@ type Watcher struct {
 }
 
 // var executionCounter = 0
+var shouldDetect []string
 
 func (w *Watcher) findFilePath() ([]string, error) {
 	wd, err := os.Getwd()
@@ -32,25 +34,41 @@ func (w *Watcher) findFilePath() ([]string, error) {
 	// This deep fried piece of shit loop holds this together 🥲
 	for _, file := range files {
 		if *w.filename != "" {
-			// parts := strings.Split(*w.filename, ".")
+			dotIndex := strings.Index(*w.filename, ".")
 
-			if strings.Contains(*w.filename, ".") {
-				// Support for single file watcher
-				if strings.Contains(file.Name(), *w.filename) {
-					// returns first file matching the name
-					return []string{filepath.Join(".", file.Name())}, nil
-				}
-			} else {
-				// Support for multiple file watcher
+			if dotIndex == -1 {
+				// by name only
 				if strings.Contains(file.Name(), *w.filename) {
 					matchingFiles = append(matchingFiles, file.Name())
+				}
+			} else if dotIndex == 0 {
+				// by file extension
+				if strings.Contains(file.Name(), *w.filename) {
+					matchingFiles = append(matchingFiles, file.Name())
+				}
+			} else {
+				// by full file name
+				if strings.Contains(file.Name(), *w.filename) {
+					// returns first file matching the name
+					// log.Warn(file.Name())
+					shouldDetect = append(shouldDetect, file.Name())
+					return []string{filepath.Join(".", file.Name())}, nil
 				}
 			}
 		}
 	}
 
 	if len(matchingFiles) > 0 {
-		log.Warn(matchingFiles)
+		// avoid createing multiple watchers for the same file
+		matchingFilesTemp := make([]string, 0, len(matchingFiles))
+		for _, file := range matchingFiles {
+			if !slices.Contains(shouldDetect, file) {
+				matchingFilesTemp = append(matchingFilesTemp, file)
+			}
+		}
+		matchingFiles = matchingFilesTemp
+		shouldDetect = append(shouldDetect, matchingFiles...)
+		// log.Warn(matchingFiles)
 		return matchingFiles, nil
 	}
 
