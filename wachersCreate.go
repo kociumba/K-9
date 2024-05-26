@@ -62,7 +62,7 @@ func (w *Watcher) init() error {
 		log.Fatal("Specified file not found")
 	}
 
-	log.Info("📂 watcher target: " + *w.filename + "found")
+	log.Info("📂 watcher target: " + *w.filename + " found")
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
