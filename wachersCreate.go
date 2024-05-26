@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/log"
 	"github.com/fsnotify/fsnotify"
 )
 
@@ -26,6 +25,7 @@ func (w *Watcher) findFilePath() (string, error) {
 
 	for _, file := range files {
 		if *w.filename != "" && strings.Contains(file.Name(), *w.filename) {
+			// log.Info("📂 watcher target: " + file.Name() + "found")
 			return filepath.Join(".", file.Name()), nil
 		}
 	}
@@ -43,7 +43,7 @@ func (w *Watcher) executeCommands() {
 		if err != nil {
 			log.Warn(err)
 		} else {
-			log.Info("\n" + string(cmdOutput))
+			log.Info(*w.filename + " changed" + "\n" + string(cmdOutput))
 		}
 	}
 }
@@ -62,6 +62,8 @@ func (w *Watcher) init() error {
 		log.Fatal("Specified file not found")
 	}
 
+	log.Info("📂 watcher target: " + *w.filename + "found")
+
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return err
@@ -72,6 +74,8 @@ func (w *Watcher) init() error {
 	if err != nil {
 		return err
 	}
+
+	log.Info("🔁 watcher created and started")
 
 	var lastEventTime time.Time
 
@@ -109,6 +113,8 @@ func initializeWatchers() {
 			}
 		}(w)
 	}
+
+	log.Info("👁️  Watchers initialized")
 
 	// Block main goroutine forever.
 	select {}

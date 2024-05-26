@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/log"
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
@@ -50,6 +49,8 @@ func parseConfig() {
 			log.Fatal("Exiting...")
 		}
 	}
+
+	log.Info("⚙️  K-9 config loaded")
 
 	initializeWatchers()
 
