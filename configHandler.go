@@ -21,8 +21,14 @@ type FileConfig struct {
 	Cmds []string `yaml:"cmds"`
 }
 
-var cfg Config
-var input string
+var (
+	cfg Config
+
+	input string
+
+	targetingStatus = make(chan bool)
+	watcherStatus   = make(chan bool)
+)
 
 var defaultConfig = `# K-9 config
 
@@ -52,12 +58,30 @@ func parseConfig() {
 
 	log.Info("⚙️  K-9 config loaded")
 
-	initializeWatchers()
+	go initTargetStatus()
+	go initWatcherStatus()
 
+	initializeWatchers()
 	// for _, watcher := range cfg.Watchers {
 	// 	log.Info(watcher.File.Type)
 	// 	log.Info(watcher.File.Cmds)
 	// }
+}
+
+func initTargetStatus() {
+
+	for i := 0; i < len(cfg.Watchers); i++ {
+		<-targetingStatus
+	}
+	log.Info("📂 Watcher targets found")
+}
+
+func initWatcherStatus() {
+
+	for i := 0; i < len(cfg.Watchers); i++ {
+		<-watcherStatus
+	}
+	log.Info("🔁 All watchers are online")
 }
 
 func initConfig() {

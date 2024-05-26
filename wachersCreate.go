@@ -62,7 +62,9 @@ func (w *Watcher) init() error {
 		log.Fatal("Specified file not found")
 	}
 
-	log.Info("📂 watcher target: " + *w.filename + " found")
+	targetingStatus <- true
+
+	// log.Info("📂 watcher target: " + *w.filename + " found")
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -75,7 +77,9 @@ func (w *Watcher) init() error {
 		return err
 	}
 
-	log.Info("🔁 watcher created and started")
+	watcherStatus <- true
+
+	// log.Info("🔁 watcher created and started")
 
 	var lastEventTime time.Time
 

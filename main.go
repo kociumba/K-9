@@ -15,8 +15,9 @@ func main() {
 	styles.Levels[clog.InfoLevel] = lipgloss.NewStyle().
 		SetString("INFO").
 		Padding(0, 1, 0, 1).
-		Background(lipgloss.Color("#5fffd7")).
+		Background(lipgloss.Color("#40449f")).
 		Foreground(lipgloss.Color("0"))
+		// Border(lipgloss.Color("0"), 1)
 	// Add a custom style for key `err`
 	styles.Keys["err"] = lipgloss.NewStyle().Foreground(lipgloss.Color("204"))
 	styles.Values["err"] = lipgloss.NewStyle().Bold(true)
