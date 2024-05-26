@@ -100,7 +100,7 @@ func (w *Watcher) init() error {
 		return err
 	}
 
-	if filePath == nil {
+	if filePath == nil || filePath[0] == "" {
 		log.Fatal("Specified file/s not found")
 	}
 
