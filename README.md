@@ -4,7 +4,7 @@
     <img src="K-9.svg" alt="K-9" title="K-9 logo" xmlns="http://www.w3.org/2000/svg">
 </p>
 
-Simple file watcher inspired by Taskfile based on yaml configuration.
+Simple file watcher inspired by Taskfile based on YAML configuration.
 
 Watches files for changes and executes user defined commands on detection.
 
@@ -13,7 +13,7 @@ Watches files for changes and executes user defined commands on detection.
 > [!NOTE]
 > If you run K-9 in a directory without a config file it will let you create one automatically.
 
-Since K-9 is inspired by Taskfile the config is a yaml file with a similar structure. The k-9.[yml/yaml] file looks like this:
+Since K-9 is inspired by Taskfile the config is a YAML file with a similar structure. The k-9.[yml/yaml] file looks like this:
 
 ```yaml
 # K-9 config
@@ -38,9 +38,9 @@ watchers:
 > [!IMPORTANT] 
 > the commands need to be either an exeutable or passed into a shell of your choosing like `cmd /c`, `pwsh -command`, `bash -c` or `sh -c`.
 
-You can add as many files to watch as you want, each one can execute the commands defined in cmds.
+You can add as many files to watch as you want, each one can execute the commands defined in `cmds`.
 
-The delay setting limits how often the commands can be executed within a specified interval in seconds (the delay is separate for each watcher).
+The `delay` setting limits how often the commands can be executed within a specified interval in seconds (the delay is separate for each watcher).
 
 Currently, K-9 can only watch files in the same directory as the k-9.yml configuration file.
 
