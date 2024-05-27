@@ -4,7 +4,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"slices"
 	"strings"
 	"time"
 
@@ -60,14 +59,17 @@ func (w *Watcher) findFilePath() ([]string, error) {
 
 	if len(matchingFiles) > 0 {
 		// avoid createing multiple watchers for the same file
-		matchingFilesTemp := make([]string, 0, len(matchingFiles))
-		for _, file := range matchingFiles {
-			if !slices.Contains(shouldDetect, file) {
-				matchingFilesTemp = append(matchingFilesTemp, file)
-			}
-		}
-		matchingFiles = matchingFilesTemp
-		shouldDetect = append(shouldDetect, matchingFiles...)
+
+		// This thing scrapped for now
+
+		// matchingFilesTemp := make([]string, 0, len(matchingFiles))
+		// for _, file := range matchingFiles {
+		// 	if !slices.Contains(shouldDetect, file) {
+		// 		matchingFilesTemp = append(matchingFilesTemp, file)
+		// 	}
+		// }
+		// matchingFiles = matchingFilesTemp
+		// shouldDetect = append(shouldDetect, matchingFiles...)
 		// log.Warn(matchingFiles)
 		return matchingFiles, nil
 	}

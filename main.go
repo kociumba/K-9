@@ -13,9 +13,9 @@ func main() {
 
 	styles := clog.DefaultStyles()
 	styles.Levels[clog.InfoLevel] = lipgloss.NewStyle().
-		SetString("INFO").
+		SetString("K-9"). // tool branding
 		Padding(0, 1, 0, 1).
-		Background(lipgloss.Color("#40449f")).
+		Background(lipgloss.Color("#6147FF")). // The tool color
 		Foreground(lipgloss.Color("0"))
 		// Border(lipgloss.Color("0"), 1)
 	// Add a custom style for key `err`
