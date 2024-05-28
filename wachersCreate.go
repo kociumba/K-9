@@ -155,7 +155,7 @@ func (w *Watcher) init() error {
 			if !ok {
 				return nil
 			}
-			log.Error(err)
+			k9p.Error(err)
 		}
 	}
 }

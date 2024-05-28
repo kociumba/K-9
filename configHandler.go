@@ -49,8 +49,11 @@ func parseConfig() {
 	if err != nil {
 		err = cleanenv.ReadConfig("k-9.yaml", &cfg)
 		if err != nil {
-			k9p.Error("Seems like K-9 can't find or read a config file in this directory. Would you like to initialize one? [y/yes] or [n/no]")
+			k9p.Error("Seems like K-9 can't find or read a config file in this directory. Would you like to initialize one?")
+			k9p.Error("Enter [y/yes] or [n/no]: ")
 			fmt.Scanln(&input)
+			// reader := bufio.NewReader(os.Stdin)
+			// input, _ := reader.ReadString('\n')
 			if input == "y" || input == "yes" {
 				initConfig()
 				k9p.Error("Edit the k-9.yml file and run the program again. Exiting...")

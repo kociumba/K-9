@@ -1,4 +1,4 @@
-you can build K-9 with `go build -C . -o ./bin -ldflags "-s -w"`
+you can build K-9 with `go get -C . -d ./...` and `go build -C . -o ./bin -ldflags "-s -w"`
 
 if you have task installed just use `task build-r`
 
