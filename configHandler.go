@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/log"
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
@@ -17,8 +18,9 @@ type Config struct {
 
 // FileConfig represents the configuration for each file entry
 type FileConfig struct {
-	Name string   `yaml:"name"`
-	Cmds []string `yaml:"cmds"`
+	Name  string   `yaml:"name"`
+	Exact bool     `yaml:"exact" env-default:"false"`
+	Cmds  []string `yaml:"cmds"`
 }
 
 var (
@@ -47,11 +49,11 @@ func parseConfig() {
 	if err != nil {
 		err = cleanenv.ReadConfig("k-9.yaml", &cfg)
 		if err != nil {
-			log.Info("Seems like K-9 can't find or read a config file in this directory. Would you like to initialize one? [y/yes] or [n/no]")
+			k9p.Error("Seems like K-9 can't find or read a config file in this directory. Would you like to initialize one? [y/yes] or [n/no]")
 			fmt.Scanln(&input)
 			if input == "y" || input == "yes" {
 				initConfig()
-				log.Info("Edit the k-9.yml file and run the program again. Exiting...")
+				k9p.Error("Edit the k-9.yml file and run the program again. Exiting...")
 				os.Exit(1)
 			} else {
 				log.Fatal("Exiting...")
@@ -59,7 +61,8 @@ func parseConfig() {
 		}
 	}
 
-	log.Info("⚙️  K-9 config loaded")
+	k9p.Info("⚙️  K-9 config loaded")
+	// log.Warn(cfg.Watchers)
 
 	go initTargetStatus()
 	go initWatcherStatus()
@@ -71,12 +74,13 @@ func parseConfig() {
 	// }
 }
 
+// status logging
 func initTargetStatus() {
 
 	for i := 0; i < len(cfg.Watchers); i++ {
 		<-targetingStatus
 	}
-	log.Info("📂 Watcher targets found")
+	k9p.Info("📂 Watcher targets found")
 }
 
 func initWatcherStatus() {
@@ -84,9 +88,10 @@ func initWatcherStatus() {
 	for i := 0; i < len(cfg.Watchers); i++ {
 		<-watcherStatus
 	}
-	log.Info("🔁 All watchers are online")
+	k9p.Info("🔁 All watchers are online")
 }
 
+// config initialization
 func initConfig() {
 	f, err := os.Create("k-9.yml")
 	if err != nil {

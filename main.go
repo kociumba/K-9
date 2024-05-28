@@ -7,7 +7,7 @@ import (
 	clog "github.com/charmbracelet/log"
 )
 
-var log = clog.New(os.Stderr)
+var k9p = clog.New(os.Stderr)
 
 func main() {
 
@@ -19,12 +19,17 @@ func main() {
 		Foreground(lipgloss.Color("0"))
 		// Border(lipgloss.Color("0"), 1)
 	// Add a custom style for key `err`
+	styles.Levels[clog.ErrorLevel] = lipgloss.NewStyle().
+		SetString("K-9").
+		Padding(0, 1, 0, 1).
+		Background(lipgloss.Color("#ed8796")).
+		Foreground(lipgloss.Color("0"))
 	styles.Keys["err"] = lipgloss.NewStyle().Foreground(lipgloss.Color("204"))
 	styles.Values["err"] = lipgloss.NewStyle().Bold(true)
 
-	log.SetStyles(styles)
+	k9p.SetStyles(styles)
 
-	log.Info("🫡  K-9 starting...")
+	k9p.Info("🫡  K-9 starting...")
 
 	parseConfig()
 }

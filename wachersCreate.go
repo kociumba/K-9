@@ -7,11 +7,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/fsnotify/fsnotify"
 )
 
 type Watcher struct {
 	filename *string
+	exact    *bool
 	cmds     *[]string
 }
 
@@ -85,9 +87,9 @@ func (w *Watcher) executeCommands() {
 
 		cmdOutput, err := exec.Command(command[0], command[1:]...).Output()
 		if err != nil {
-			log.Warn(err)
+			log.Error(err)
 		} else {
-			log.Info(*w.filename + " changed" + "\n" + string(cmdOutput))
+			k9p.Info(*w.filename + " changed" + "\n" + string(cmdOutput))
 		}
 	}
 }
@@ -97,15 +99,22 @@ func (w *Watcher) executeCommands() {
 //
 // Returns an error if there was an issue finding the file path, creating the watcher, or adding the file path to the watcher.
 func (w *Watcher) init() error {
-	filePath, err := w.findFilePath()
-	if err != nil {
-		return err
+	var filePath []string
+	var err error
+
+	if !*w.exact {
+		filePath, err = w.findFilePath()
+		if err != nil {
+			return err
+		}
+	} else {
+		filePath = append(filePath, *w.filename)
 	}
 
 	if filePath == nil || filePath[0] == "" {
 		log.Fatal("Specified file/s not found")
 	}
-
+	// log.Info(filePath)
 	targetingStatus <- true
 
 	// log.Info("📂 watcher target: " + *w.filename + " found")
@@ -146,7 +155,7 @@ func (w *Watcher) init() error {
 			if !ok {
 				return nil
 			}
-			log.Warn(err)
+			log.Error(err)
 		}
 	}
 }
@@ -155,6 +164,7 @@ func initializeWatchers() {
 	for _, watcher := range cfg.Watchers {
 		w := &Watcher{
 			filename: &watcher.File.Name,
+			exact:    &watcher.File.Exact,
 			cmds:     &watcher.File.Cmds,
 		}
 		go func(w *Watcher) {
@@ -164,8 +174,8 @@ func initializeWatchers() {
 		}(w)
 	}
 
-	log.Info("👁️  Watchers initialized")
+	k9p.Info("👁️  Watchers initialized")
 
-	// Block main goroutine forever.
+	// Block goroutine to let watchers do their work.
 	select {}
 }

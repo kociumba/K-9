@@ -33,6 +33,11 @@ watchers:
     name: .go # will watch all files with the extension .go
     cmds:
     - go test
+- file:
+    name: ./test # using a directory instead of a file with `exact: true` will watch every file in the directory
+    exact: true # defaults to false, if true let's you watch any path specified in name (will error if the path does not exist)
+    cmds:
+    - cmd /c echo detection in ./test! 
 ```
 
 > [!IMPORTANT] 
@@ -42,7 +47,7 @@ You can add as many files to watch as you want, each one can execute the command
 
 The `delay` setting limits how often the commands can be executed within a specified interval in seconds (the delay is separate for each watcher).
 
-Currently, K-9 can only watch files in the same directory as the k-9.yml configuration file.
+To watch all files in a directory use `exact: true`
 
 For instructions on how to build it look in [build](bin/build.md)
 
