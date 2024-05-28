@@ -38,7 +38,8 @@ delay: 10
 
 watchers:
 - file:
-    name: main.go
+    name: ./
+	exact: true
     cmds:
     - cmd /c echo Hello from K-9!
 
@@ -56,8 +57,8 @@ func parseConfig() {
 			// input, _ := reader.ReadString('\n')
 			if input == "y" || input == "yes" {
 				initConfig()
-				k9p.Error("Edit the k-9.yml file and run the program again. Exiting...")
-				os.Exit(1)
+				k9p.Error("Edit k-9.yml and run the program again. Exiting...")
+				os.Exit(0)
 			} else {
 				log.Fatal("Exiting...")
 			}
@@ -100,7 +101,7 @@ func initConfig() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
 
 	f.Write([]byte(defaultConfig))
+	f.Close()
 }
