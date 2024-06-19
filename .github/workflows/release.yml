@@ -14,14 +14,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Generate build files
-        uses: thatisuday/go-cross-build@v1
+      - name: Build
+        uses: crazy-max/ghaction-xgo@v3
         with:
-          platforms: 'linux/amd64, darwin/amd64, windows/amd64'
-          package: ''
-          name: 'k-9'
-          compress: 'false'
-          dest: 'bin'
+          xgo_version: latest
+          go_version: 1.22
+          dest: bin
+          prefix: k-9
+          targets: windows/amd64,linux/amd64,linux/arm64,darwin/arm64
+          v: true
+          x: true
+          race: true
+          ldflags: -s -w
+          buildmode: default
+          trimpath: true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
