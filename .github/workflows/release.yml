@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v.*" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        go_version: [1.22.1]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Go 1.22
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go_version }}
+      # - name: Test Pre-Publish
+      #   run: make test
+      - name: Build with xgo
+        uses: crazy-max/ghaction-xgo@v1
+        with:
+          xgo_version: latest
+          go_version: ${{ matrix.go_version }}
+          dest: build
+          prefix: k-9
+          targets: windows/386,windows/amd64,linux/386,linux/amd64,darwin/386,darwin/amd64
+          v: true
+          x: false
+          ldflags: -s -w
+      # Only create release if triggered by a tag push
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/create-release@v1.0.0
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      # Only upload release assets if a release was created
+      - name: Upload Release Assets
+        if: steps.create_release.outputs.upload_url != ''
+        uses: glentiki/xbin-release-action@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          assets_path: ./build
