@@ -18,16 +18,16 @@ jobs:
         uses: thatisuday/go-cross-build@v1
         with:
           platforms: 'linux/amd64, darwin/amd64, windows/amd64'
-          package: ''
+          package: 'main'
           name: 'k-9'
           compress: 'false'
-          dest: 'build'
+          dest: 'bin'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: k-9-${{ github.ref_name }}
-          path: k-9*
+          path: bin/k-9*
 
       - name: Release asset
         if: startsWith(github.ref, 'refs/tags/')
@@ -39,5 +39,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            k-9*
+            bin/k-9*
           generate_release_notes: true
