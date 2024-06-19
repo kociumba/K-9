@@ -49,6 +49,15 @@ The `delay` setting limits how often the commands can be executed within a speci
 
 To watch all files in a directory use `exact: true`
 
-For instructions on how to build it look in [build](bin/build.md)
+## Instalation
 
-I'm going to make a scoop script later for easy installation.
+For instructions on how to build it yourself look in [build](bin/build.md).
+
+Prebuild libraries for:
+- Windows
+- Linux
+- macOS
+
+are availible in [releases](https://github.com/kociumba/K-9/releases).
+
+These should be added to path for command line usage.
